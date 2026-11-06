@@ -1,0 +1,372 @@
+/* ============================================================
+   OpenAll — 设计令牌
+   暖调象牙底 + 陶土橙点缀 + 衬线标题：安静、克制、有温度
+   ============================================================ */
+
+:root {
+  --bg: #f5f4ee;
+  --surface: #fbfaf6;
+  --surface-hover: #ffffff;
+  --sunken: #ebe9e0;
+
+  --line: rgba(31, 30, 29, 0.09);
+  --line-strong: rgba(31, 30, 29, 0.16);
+
+  --text: #1f1e1d;
+  --text-2: #5e5d59;
+  --text-3: #8f8d86;
+
+  --accent: #c96442;
+  --accent-hover: #b4532f;
+  --accent-soft: rgba(201, 100, 66, 0.1);
+  --accent-ring: rgba(201, 100, 66, 0.28);
+  --on-accent: #fffaf5;
+
+  --ok: #5f7d4e;
+  --ok-soft: rgba(95, 125, 78, 0.12);
+  --danger: #b5432f;
+
+  --shadow-sm: 0 1px 2px rgba(31, 30, 29, 0.04), 0 1px 1px rgba(31, 30, 29, 0.03);
+  --shadow-md: 0 1px 2px rgba(31, 30, 29, 0.04), 0 8px 24px -8px rgba(31, 30, 29, 0.12);
+  --shadow-lg: 0 2px 4px rgba(31, 30, 29, 0.04), 0 24px 48px -16px rgba(31, 30, 29, 0.18);
+
+  --font-serif: 'Tiempos Headline', 'Iowan Old Style', Charter, Georgia, 'Noto Serif SC',
+    'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+  /* 动效曲线：按下要快，回弹要软 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-press: cubic-bezier(0.2, 0, 0, 1);
+
+  --titlebar-h: 44px;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #1f1e1d;
+  --surface: #282725;
+  --surface-hover: #2e2d2a;
+  --sunken: #181716;
+
+  --line: rgba(250, 249, 245, 0.08);
+  --line-strong: rgba(250, 249, 245, 0.15);
+
+  --text: #f0eee6;
+  --text-2: #bfbdb4;
+  --text-3: #8a8880;
+
+  --accent: #d97757;
+  --accent-hover: #e3896b;
+  --accent-soft: rgba(217, 119, 87, 0.14);
+  --accent-ring: rgba(217, 119, 87, 0.35);
+  --on-accent: #1f1e1d;
+
+  --ok: #8fae7a;
+  --ok-soft: rgba(143, 174, 122, 0.14);
+  --danger: #e0715a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.25), 0 10px 28px -10px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 28px 56px -18px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* ============================================================
+   Reset
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  user-select: none;
+  transition: background-color 0.3s;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  user-select: text;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--accent-ring);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ring);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================================
+   通用：按钮
+   ============================================================ */
+
+.btn {
+  --btn-bg: var(--surface);
+  --btn-fg: var(--text);
+  --btn-line: var(--line-strong);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: inset 0 0 0 1px var(--btn-line), var(--shadow-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    transform 0.45s var(--ease-spring),
+    background-color 0.2s,
+    box-shadow 0.2s,
+    color 0.2s,
+    opacity 0.2s;
+}
+.btn:hover {
+  --btn-bg: var(--surface-hover);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+  transition-duration: 0.1s;
+  transition-timing-function: var(--ease-press);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--on-accent);
+  --btn-line: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 1px 2px rgba(120, 50, 20, 0.2),
+    0 4px 12px -4px rgba(201, 100, 66, 0.45);
+}
+.btn-primary:hover {
+  --btn-bg: var(--accent-hover);
+}
+
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-line: transparent;
+  box-shadow: none;
+  color: var(--text-2);
+}
+.btn-ghost:hover {
+  --btn-bg: var(--sunken);
+  color: var(--text);
+}
+
+.btn-lg {
+  height: 44px;
+  padding: 0 22px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   通用：排版 / 面板
+   ============================================================ */
+
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-sm);
+}
+
+/* 分段选择器 */
+.segmented {
+  position: relative;
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.segmented button {
+  position: relative;
+  z-index: 1;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.segmented button.on {
+  color: var(--text);
+}
+.segmented .thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--line);
+  transition:
+    left 0.4s var(--ease-spring),
+    width 0.4s var(--ease-spring);
+}
+
+/* ============================================================
+   页面切换：View Transitions（方块 → 工具页的形变）
+   ============================================================ */
+
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-old(root) {
+  animation: vt-fade-out 0.18s var(--ease-out) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 0.34s 0.1s var(--ease-out) both;
+}
+::view-transition-old(tool-hero),
+::view-transition-new(tool-hero) {
+  height: 100%;
+  width: 100%;
+  object-fit: none;
+  object-position: left top;
+}
+::view-transition-old(tool-hero) {
+  animation: vt-fade-out 0.2s var(--ease-out) both;
+}
+::view-transition-new(tool-hero) {
+  animation: vt-fade-in 0.3s 0.12s var(--ease-out) both;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* v-press 涟漪 */
+.press-ripple {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.1;
+  transform: scale(0);
+  animation: ripple-in 0.55s var(--ease-out) forwards;
+  transition: opacity 0.5s var(--ease-out);
+}
+.press-ripple.out {
+  opacity: 0;
+}
+@keyframes ripple-in {
+  to {
+    transform: scale(1);
+  }
+}
